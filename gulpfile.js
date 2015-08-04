@@ -26,7 +26,7 @@
             custom: {
                 root: 'custom/',
                 styles: 'custom/css/',
-                scripts: 'custom/js/',
+                scripts: 'custom/js/'
             },
             dist: {
                 root: 'dist/',
@@ -38,20 +38,21 @@
                     root: 'kitchen-sink-ios/',
                     css: 'kitchen-sink-ios/css/',
                     jade: 'kitchen-sink-ios/jade/*.jade',
-                    less: 'kitchen-sink-ios/less/*.less',
+                    less: 'kitchen-sink-ios/less/*.less'
                 },
                 material : {
                     root: 'kitchen-sink-material/',
                     css: 'kitchen-sink-material/css/',
                     jade: 'kitchen-sink-material/jade/*.jade',
-                    less: 'kitchen-sink-material/less/*.less',
+                    less: 'kitchen-sink-material/less/*.less'
                 }
             },
             source: {
                 root: 'src/',
                 styles: {
                     ios: 'src/less/ios/',
-                    material: 'src/less/material/'
+                    material: 'src/less/material/',
+                    metro: 'src/less/metro/'
                 },
                 scripts: 'src/js/*.js'
             },
@@ -231,6 +232,18 @@
                 cb();
             });
     });
+    gulp.task('styles-metro', function (cb) {
+        gulp.src([paths.source.styles.metro + 'framework7.metro.less', paths.source.styles.metro + 'framework7.metro.rtl.less', paths.source.styles.metro + 'framework7.metro.colors.less'])
+            .pipe(less({
+                paths: [ path.join(__dirname, 'less', 'includes') ]
+            }))
+            .pipe(header(f7.banner, { pkg : f7.pkg, date: f7.date, theme: 'Microsoft Metro Theme' }))
+            .pipe(gulp.dest(paths.build.styles))
+            .pipe(connect.reload())
+            .on('end', function () {
+                cb();
+            });
+    });
 
     // F7 Demo App
     gulp.task('demo-app', function (cb) {
@@ -240,7 +253,7 @@
                 locals: {
                     stylesheetFilename: 'framework7.ios',
                     stylesheetColorsFilename: 'framework7.ios.colors',
-                    scriptFilename: 'framework7',
+                    scriptFilename: 'framework7'
                 }
             }))
             .pipe(gulp.dest(paths.build.root));
@@ -256,7 +269,7 @@
         cb();
     });
 
-    gulp.task('build', ['scripts', 'styles-ios', 'styles-material', 'demo-app'], function (cb) {
+    gulp.task('build', ['scripts', 'styles-ios', 'styles-material','styles-metro', 'demo-app'], function (cb) {
         cb();
     });
 
@@ -346,7 +359,7 @@
                         locals: {
                             stylesheetFilename: 'framework7.ios.min',
                             stylesheetColorsFilename: 'framework7.ios.colors.min',
-                            scriptFilename: 'framework7.min',
+                            scriptFilename: 'framework7.min'
                         }
                     }))
                     .pipe(gulp.dest(paths.dist.root));
@@ -368,7 +381,10 @@
                     paths.dist.styles + f7.filename + '.ios.colors.css',
                     paths.dist.styles + f7.filename + '.material.css', 
                     paths.dist.styles + f7.filename + '.material.rtl.css', 
-                    paths.dist.styles + f7.filename + '.material.colors.css'
+                    paths.dist.styles + f7.filename + '.material.colors.css',
+                    paths.dist.styles + f7.filename + '.metro.css',
+                    paths.dist.styles + f7.filename + '.metro.rtl.css',
+                    paths.dist.styles + f7.filename + '.metro.colors.css'
                 ];
                 gulp.src(minifiedCSS)
                     .pipe(minifyCSS({
@@ -396,11 +412,12 @@
             modules = modules.substring(1).replace(/ /g, '').replace(/,,/g, ',');
             modules = modules.split(',');
         }
-        var modulesJs = [], modulesLessIOS = [], modulesLessMaterial = [];
+        var modulesJs = [], modulesLessIOS = [], modulesLessMaterial = [], modulesLessMetro = [];
         var i, module;
         modulesJs.push.apply(modulesJs, f7.modules.core_intro.js);
         modulesLessIOS.push.apply(modulesLessIOS, f7.modules.core_intro.less.ios);
         modulesLessMaterial.push.apply(modulesLessMaterial, f7.modules.core_intro.less.material);
+        modulesLessMetro.push.apply(modulesLessMetro, f7.modules.core_intro.less.metro);
         for (i = 0; i < modules.length; i++) {
             module = f7.modules[modules[i]];
             if (module.dependencies.length > 0) {
@@ -420,15 +437,20 @@
             if (module.less.material && module.less.material.length > 0) {
                 modulesLessMaterial.push.apply(modulesLessMaterial, module.less.material);
             }
+            if (module.less.metro && module.less.metro.length > 0) {
+                modulesLessMetro.push.apply(modulesLessMetro, module.less.metro);
+            }
+
         }
         modulesJs.push.apply(modulesJs, f7.modules.core_outro.js);
         modulesLessIOS.push.apply(modulesLessIOS, f7.modules.core_outro.less.ios);
         modulesLessMaterial.push.apply(modulesLessMaterial, f7.modules.core_outro.less.material);
-
+        modulesLessMetro.push.apply(modulesLessMetro, f7.modules.core_outro.less.metro);
         // Unique
         var customJsList = [];
         var customLessIOS = [];
         var customLessMaterial = [];
+        var customLessMetro = [];
         for (i = 0; i < modulesJs.length; i++) {
             if (customJsList.indexOf(modulesJs[i]) < 0) customJsList.push(modulesJs[i]);
         }
@@ -437,6 +459,9 @@
         }
         for (i = 0; i < modulesLessMaterial.length; i++) {
             if (customLessMaterial.indexOf(modulesLessMaterial[i]) < 0) customLessMaterial.push(modulesLessMaterial[i]);
+        }
+        for (i = 0; i < modulesLessMetro.length; i++) {
+            if (customLessMetro.indexOf(modulesLessMetro[i]) < 0) customLessMetro.push(modulesLessMetro[i]);
         }
 
         // JS
@@ -458,9 +483,9 @@
             .pipe(gulp.dest(paths.custom.scripts));
         
         // CSSes
-        [customLessIOS, customLessMaterial].forEach(function (customLessList) {
-            var theme = customLessList === customLessIOS ? 'ios' : 'material';
-            var themeName = theme === 'ios' ? 'iOS Theme' : 'Google Material Theme';
+        [customLessIOS, customLessMaterial, customLessMetro].forEach(function (customLessList) {
+            var theme = customLessList === customLessIOS ? 'ios': customLessMetro ? 'metro' : 'material';
+            var themeName = theme === 'ios' ? 'iOS Theme' ? 'metro' : 'Microsoft Metro Theme' : 'Google Material Theme';
             gulp.src(customLessList)
                 .pipe(concat(f7.filename + '.' + theme + '.custom.less'))
                 .pipe(less({
@@ -488,7 +513,7 @@
         gulp.watch(paths.source.scripts, [ 'scripts' ]);
         gulp.watch(paths.source.styles.ios + '*.less', [ 'styles-ios' ]);
         gulp.watch(paths.source.styles.material + '*.less', [ 'styles-material' ]);
-
+        gulp.watch(paths.source.styles.metro + '*.less', [ 'styles-metro' ]);
         // Demo App
         gulp.watch([paths.source.root + 'templates/*.jade', paths.source.root + 'my-app/*.*', paths.source.root + 'img/*.*'], ['demo-app']);
 
