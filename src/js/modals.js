@@ -82,7 +82,7 @@ app.prompt = function (text, title, callbackOk, callbackCancel) {
     return app.modal({
         text: text || '',
         title: typeof title === 'undefined' ? app.params.modalTitle : title,
-        afterText: '<input type="text" class="modal-text-input">',
+        afterText: '<div class="input-field"><input type="text" class="modal-text-input"></div>',
         buttons: [
             {
                 text: app.params.modalButtonCancel
@@ -107,7 +107,7 @@ app.modalLogin = function (text, title, callbackOk, callbackCancel) {
     return app.modal({
         text: text || '',
         title: typeof title === 'undefined' ? app.params.modalTitle : title,
-        afterText: '<input type="text" name="modal-username" placeholder="' + app.params.modalUsernamePlaceholder + '" class="modal-text-input modal-text-input-double"><input type="password" name="modal-password" placeholder="' + app.params.modalPasswordPlaceholder + '" class="modal-text-input modal-text-input-double">',
+        afterText: '<div class="input-field modal-input-double"><input type="text" name="modal-username" placeholder="' + app.params.modalUsernamePlaceholder + '" class="modal-text-input"></div><div class="input-field modal-input-double"><input type="password" name="modal-password" placeholder="' + app.params.modalPasswordPlaceholder + '" class="modal-text-input"></div>',
         buttons: [
             {
                 text: app.params.modalButtonCancel
@@ -134,7 +134,7 @@ app.modalPassword = function (text, title, callbackOk, callbackCancel) {
     return app.modal({
         text: text || '',
         title: typeof title === 'undefined' ? app.params.modalTitle : title,
-        afterText: '<input type="password" name="modal-password" placeholder="' + app.params.modalPasswordPlaceholder + '" class="modal-text-input">',
+        afterText: '<div class="input-field"><input type="password" name="modal-password" placeholder="' + app.params.modalPasswordPlaceholder + '" class="modal-text-input"></div>',
         buttons: [
             {
                 text: app.params.modalButtonCancel
@@ -154,7 +154,7 @@ app.modalPassword = function (text, title, callbackOk, callbackCancel) {
 app.showPreloader = function (title) {
     return app.modal({
         title: title || app.params.modalPreloaderTitle,
-        text: '<div class="preloader"></div>',
+        text: '<div class="preloader">' + (app.params.material ? app.params.materialPreloaderSvg : '') + '</div>',
         cssClass: 'modal-preloader'
     });
 };
@@ -162,7 +162,7 @@ app.hidePreloader = function () {
     app.closeModal('.modal.modal-in');
 };
 app.showIndicator = function () {
-    $('body').append('<div class="preloader-indicator-overlay"></div><div class="preloader-indicator-modal"><span class="preloader preloader-white"></span></div>');
+    $('body').append('<div class="preloader-indicator-overlay"></div><div class="preloader-indicator-modal"><span class="preloader preloader-white">' + (app.params.material ? app.params.materialPreloaderSvg : '') + '</span></div>');
 };
 app.hideIndicator = function () {
     $('.preloader-indicator-overlay, .preloader-indicator-modal').remove();
@@ -232,7 +232,7 @@ app.actions = function (target, params) {
                     if (button.color) buttonClass += ' color-' + button.color;
                     if (button.bg) buttonClass += ' bg-' + button.bg;
                     if (button.disabled) buttonClass += ' disabled';
-                    buttonsHTML += '<span class="' + buttonClass + '">' + button.text + '</span>';
+                    buttonsHTML += '<div class="' + buttonClass + '">' + button.text + '</div>';
                     if (j === params[i].length - 1) buttonsHTML += '</div>';
                 }
             }
@@ -302,7 +302,6 @@ app.popover = function (modal, target, removeOnClose) {
             modal.removeClass('popover-on-left popover-on-right popover-on-top popover-on-bottom').css({left: '', top: ''});
         }
 
-
         var targetWidth = target.outerWidth();
         var targetHeight = target.outerHeight();
         var targetOffset = target.offset();
@@ -318,16 +317,17 @@ app.popover = function (modal, target, removeOnClose) {
         var modalLeft = 0;
         var diff = 0;
         // Top Position
-        var modalPosition = 'top';
+        var modalPosition = material ? 'bottom' : 'top';
         if (material) {
-            if (modalHeight < targetOffset.top) {
-                // On top
-                modalTop = targetOffset.top - modalHeight + targetHeight;
-            }
-            else if (modalHeight < windowHeight - targetOffset.top - targetHeight) {
+            if (modalHeight < windowHeight - targetOffset.top - targetHeight) {
                 // On bottom
                 modalPosition = 'bottom';
                 modalTop = targetOffset.top;
+            }
+            else if (modalHeight < targetOffset.top) {
+                // On top
+                modalTop = targetOffset.top - modalHeight + targetHeight;
+                modalPosition = 'top';
             }
             else {
                 // On middle
@@ -336,17 +336,19 @@ app.popover = function (modal, target, removeOnClose) {
             }
 
             if (modalTop <= 0) {
-                modalTop = 5;
+                modalTop = 8;
             }
             else if (modalTop + modalHeight >= windowHeight) {
-                modalTop = windowHeight - modalHeight - 5;
+                modalTop = windowHeight - modalHeight - 8;
             }
 
             // Horizontal Position
             modalLeft = targetOffset.left;
-            if (modalLeft < 5) modalLeft = 5;
-            if (modalLeft + modalWidth > windowWidth) {
-                modalLeft = targetOffset.left + targetWidth - modalWidth;
+            if (modalLeft + modalWidth >= windowWidth - 8) {
+                modalLeft = targetOffset.left + targetWidth - modalWidth - 8;
+            }
+            if (modalLeft < 8) {
+                modalLeft = 8;
             }
             if (modalPosition === 'top') {
                 modal.addClass('popover-on-top');
@@ -423,10 +425,6 @@ app.popover = function (modal, target, removeOnClose) {
         $(window).off('resize', sizePopover);
     });
 
-    if (modal.find('.' + app.params.viewClass).length > 0) {
-        app.sizeNavbars(modal.find('.' + app.params.viewClass)[0]);
-    }
-
     app.openModal(modal);
     return modal[0];
 };
@@ -445,9 +443,7 @@ app.popup = function (modal, removeOnClose) {
     modal = $(modal);
     if (modal.length === 0) return false;
     modal.show();
-    if (modal.find('.' + app.params.viewClass).length > 0) {
-        app.sizeNavbars(modal.find('.' + app.params.viewClass)[0]);
-    }
+    
     app.openModal(modal);
     return modal[0];
 };
@@ -472,9 +468,7 @@ app.loginScreen = function (modal) {
     modal = $(modal);
     if (modal.length === 0) return false;
     modal.show();
-    if (modal.find('.' + app.params.viewClass).length > 0) {
-        app.sizeNavbars(modal.find('.' + app.params.viewClass)[0]);
-    }
+    
     app.openModal(modal);
     return modal[0];
 };
@@ -516,6 +510,14 @@ app.openModal = function (modal) {
         }
         overlay = isPopup ? $('.popup-overlay') : $('.modal-overlay');
     }
+    if (app.params.material && isPickerModal) {
+        if (modal.hasClass('picker-calendar')) {
+            if ($('.picker-modal-overlay').length === 0 && !isPopup) {
+                $('body').append('<div class="picker-modal-overlay"></div>');
+            }
+            overlay = $('.picker-modal-overlay');
+        }
+    }
 
     //Make sure that styles are applied, trigger relayout;
     var clientLeft = modal[0].clientLeft;
@@ -528,8 +530,19 @@ app.openModal = function (modal) {
         $('body').addClass('with-picker-modal');
     }
 
+    // Init Pages and Navbars in modal
+    if (modal.find('.' + app.params.viewClass).length > 0) {
+        modal.find('.page').each(function () {
+            app.initPageWithCallback(this);
+        });
+        modal.find('.navbar').each(function () {
+            app.initNavbarWithCallback(this); 
+        });
+    }
+
     // Classes for transition in
     if (!isLoginScreen && !isPickerModal) overlay.addClass('modal-overlay-visible');
+    if (app.params.material && isPickerModal && overlay) overlay.addClass('modal-overlay-visible');
     modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function (e) {
         if (modal.hasClass('modal-out')) modal.trigger('closed');
         else modal.trigger('opened');
@@ -557,13 +570,13 @@ app.closeModal = function (modal) {
 
     var removeOnClose = modal.hasClass('remove-on-close');
 
-    var overlay = isPopup ? $('.popup-overlay') : $('.modal-overlay');
+    var overlay = isPopup ? $('.popup-overlay') : (isPickerModal && app.params.material ? $('.picker-modal-overlay') : $('.modal-overlay'));
     if (isPopup){
         if (modal.length === $('.popup.modal-in').length) {
             overlay.removeClass('modal-overlay-visible');
         }
     }
-    else if (!isPickerModal) {
+    else if (overlay && overlay.length > 0) {
         overlay.removeClass('modal-overlay-visible');
     }
 
@@ -575,7 +588,7 @@ app.closeModal = function (modal) {
         $('body').addClass('picker-modal-closing');
     }
 
-    if (!isPopover) {
+    if (!(isPopover && !app.params.material)) {
         modal.removeClass('modal-in').addClass('modal-out').transitionEnd(function (e) {
             if (modal.hasClass('modal-out')) modal.trigger('closed');
             else modal.trigger('opened');
@@ -583,7 +596,7 @@ app.closeModal = function (modal) {
             if (isPickerModal) {
                 $('body').removeClass('picker-modal-closing');
             }
-            if (isPopup || isLoginScreen || isPickerModal) {
+            if (isPopup || isLoginScreen || isPickerModal || isPopover) {
                 modal.removeClass('modal-out').hide();
                 if (removeOnClose && modal.length > 0) {
                     modal.remove();

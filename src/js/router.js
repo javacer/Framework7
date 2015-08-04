@@ -83,9 +83,11 @@ app.router = {
             leftNavbarInner.removeClass(removeClasses).addClass('navbar-from-center-to-left');
             leftNavbarInner.find('.sliding').each(function () {
                 var sliding = $(this);
+                var rightText;
                 if (app.params.animateNavBackIcon) {
                     if (sliding.hasClass('center') && rightNavbarInner.find('.sliding.left .back .icon').length > 0) {
-                        this.f7NavbarLeftOffset += rightNavbarInner.find('.sliding.left .back span')[0].offsetLeft;
+                        rightText = rightNavbarInner.find('.sliding.left .back span');
+                        if (rightText.length > 0) this.f7NavbarLeftOffset += rightText[0].offsetLeft;
                     }
                     if (sliding.hasClass('left') && sliding.find('.back .icon').length > 0) {
                         sliding.find('.back .icon').transform('translate3d(' + (-this.f7NavbarLeftOffset) + 'px,0,0)');
@@ -543,7 +545,14 @@ app.router._load = function (view, options) {
     }
     if (animatePages) {
         // Set pages before animation
-        app.router.animatePages(oldPage, newPage, 'to-left', view);
+        if (app.params.material && app.params.materialPageLoadDelay) {
+            setTimeout(function () {
+                app.router.animatePages(oldPage, newPage, 'to-left', view);            
+            }, app.params.materialPageLoadDelay);
+        }
+        else {
+            app.router.animatePages(oldPage, newPage, 'to-left', view);    
+        }
 
         // Dynamic navbar animation
         if (dynamicNavbar) {
