@@ -35,7 +35,7 @@ app.router = {
         var removeClasses = 'page-on-center page-on-right page-on-left';
         if (direction === 'to-left') {
             if (app.device.winPhone) {
-                $(view.container).addClass('pageEnterAnimation');
+                $(view.container).addClass('page-enter-animation');
             }
             leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
             rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
@@ -43,11 +43,10 @@ app.router = {
         // Go back
         if (direction === 'to-right') {
             if (app.device.winPhone) {
-                $(view.container).addClass('pageOuterAnimation');
+                $(view.container).addClass('page-outer-animation');
             }
             leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
             rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
-
         }
     },
 
@@ -516,7 +515,7 @@ app.router._load = function (view, options) {
     function afterAnimation() {
         view.allowPageChange = true;
         if (app.device.winPhone) {
-            $(view.container).removeClass('pageOuterAnimation pageEnterAnimation');
+            $(view.container).removeClass('page-enter-animation page-outer-animation');
         }
         newPage.removeClass('page-from-right-to-center page-on-right page-on-left').addClass('page-on-center');
         oldPage.removeClass('page-from-center-to-left page-on-center page-on-right').addClass('page-on-left');
@@ -554,6 +553,15 @@ app.router._load = function (view, options) {
     }
     if (animatePages) {
         // Set pages before animation
+        if (app.device.winPhone) {
+            $(view.container).animationEnd( function (e) {
+                afterAnimation();
+            });
+        } else {
+            newPage.animationEnd(function (e) {
+                afterAnimation();
+            });
+        }
         if (app.params.material && app.params.materialPageLoadDelay) {
             setTimeout(function () {
                 app.router.animatePages(oldPage, newPage, 'to-left', view);
@@ -568,15 +576,6 @@ app.router._load = function (view, options) {
             setTimeout(function() {
                 app.router.animateNavbars(oldNavbarInner, newNavbarInner, 'to-left', view);
             }, 0);
-        }
-        if (app.device.winPhone) {
-            $(view.container).animationEnd(function (e) {
-                afterAnimation();
-            });
-        } else {
-            newPage.animationEnd(function (e) {
-                afterAnimation();
-            });
         }
     }
     else {
@@ -709,6 +708,16 @@ app.router._back = function (view, options) {
 
         if (animatePages) {
             // Set pages before animation
+            if (app.device.winPhone) {
+                $(view.container).animationEnd(function (e) {
+                    afterAnimation();
+                });
+            } else {
+                newPage.animationEnd(function (e) {
+                    afterAnimation();
+                });
+            }
+
             app.router.animatePages(newPage, oldPage, 'to-right', view);
 
             // Dynamic navbar animation
@@ -717,16 +726,7 @@ app.router._back = function (view, options) {
                     app.router.animateNavbars(newNavbarInner, oldNavbarInner, 'to-right', view);
                 }, 0);
             }
-            if (app.device.winPhone) {
-                $(view.container).animationEnd(function (e) {
 
-                    afterAnimation();
-                });
-            } else {
-                newPage.animationEnd(function (e) {
-                    afterAnimation();
-                });
-            }
         }
         else {
             if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
