@@ -1074,6 +1074,10 @@ app.router.afterBack = function (view, oldPage, newPage) {
     oldPage = $(oldPage);
     newPage = $(newPage);
 
+    if (app.device.winPhone) {
+        $(view.container).removeClass('page-enter-animation page-outer-animation');
+    }
+
     if (view.params.domCache && view.initialPages.indexOf(oldPage[0]) >= 0) {
         oldPage.removeClass('page-from-center-to-right').addClass('cached');
     }
