@@ -29,11 +29,14 @@ app.sortableClose = function (sortableContainer) {
 };
 app.initSortable = function () {
     var isTouched, isMoved, touchStartY, touchesDiff, sortingEl, sortingElHeight, sortingItems, minTop, maxTop, insertAfter, insertBefore, sortableContainer;
-    
+
     function handleTouchStart(e) {
         isMoved = false;
         isTouched = true;
-        touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        touchStartY = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageY: e.pageY;
         /*jshint validthis:true */
         sortingEl = $(this).parent();
         sortingItems = sortingEl.parent().find('li');
@@ -43,8 +46,11 @@ app.initSortable = function () {
     }
     function handleTouchMove(e) {
         if (!isTouched || !sortingEl) return;
-        var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        var pageX = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX: e.pageX;
+        var pageY = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY: e.pageY;
         if (!isMoved) {
             sortingEl.addClass('sorting');
             sortableContainer.addClass('sortable-sorting');
@@ -125,5 +131,5 @@ app.initSortable = function () {
         $(document).on(app.touchEvents.move, handleTouchMove);
         $(document).on(app.touchEvents.end, handleTouchEnd);
     }
-        
+
 };

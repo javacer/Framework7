@@ -43,7 +43,7 @@ var PhotoBrowser = function (params) {
         onSwipeToClose(pb)
         */
     };
-    
+
     params = params || {};
     if (!params.backLinkText && app.params.material) defaults.backLinkText = '';
     for (var def in defaults) {
@@ -57,7 +57,7 @@ var PhotoBrowser = function (params) {
     pb.params.preloaderColorClass = pb.params.theme === 'dark' ? 'preloader-white' : '';
 
     // Templates
-    var photoTemplate = pb.params.photoTemplate || 
+    var photoTemplate = pb.params.photoTemplate ||
         '<div class="photo-browser-slide swiper-slide">' +
             '<span class="photo-browser-zoom-container">' +
                 '<img src="{{js "this.url || this"}}">' +
@@ -228,7 +228,7 @@ var PhotoBrowser = function (params) {
         pb.container.find('.photo-browser-total').text(total);
 
         $('.photo-browser-prev, .photo-browser-next').removeClass('photo-browser-link-inactive');
-        
+
         if (swiper.isBeginning && !pb.params.loop) {
             $('.photo-browser-prev').addClass('photo-browser-link-inactive');
         }
@@ -262,7 +262,7 @@ var PhotoBrowser = function (params) {
         }
         if (pb.params.onTransitionEnd) pb.params.onTransitionEnd(swiper);
     };
-    
+
     pb.layout = function (index) {
         if (pb.params.type === 'page') {
             pb.container = $('.photo-browser-swiper-container').parents('.view');
@@ -279,7 +279,7 @@ var PhotoBrowser = function (params) {
         pb.slides = pb.container.find('.photo-browser-slide');
         pb.captionsContainer = pb.container.find('.photo-browser-captions');
         pb.captions = pb.container.find('.photo-browser-caption');
-        
+
         var sliderSettings = {
             nextButton: pb.params.nextButton || '.photo-browser-next',
             prevButton: pb.params.prevButton || '.photo-browser-prev',
@@ -307,7 +307,7 @@ var PhotoBrowser = function (params) {
                 pb.onSliderTransitionStart(swiper);
             },
             onTransitionEnd: function (swiper) {
-                pb.onSliderTransitionEnd(swiper);  
+                pb.onSliderTransitionEnd(swiper);
             },
             onSlideChangeStart: pb.params.onSlideChangeStart,
             onSlideChangeEnd: pb.params.onSlideChangeEnd,
@@ -371,7 +371,7 @@ var PhotoBrowser = function (params) {
         if (pb.params.expositionHideCaptions) pb.captionsContainer.removeClass('photo-browser-captions-exposed');
         pb.exposed = false;
     };
-    
+
     // Gestures
     var gestureSlide, gestureImg, gestureImgWrap, scale = 1, currentScale = 1, isScaling = false;
     pb.onSlideGestureStart = function (e) {
@@ -433,8 +433,11 @@ var PhotoBrowser = function (params) {
         if (imageIsTouched) return;
         if (app.device.os === 'android') e.preventDefault();
         imageIsTouched = true;
-        imageTouchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
-        imageTouchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        imageTouchesStart.x = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        imageTouchesStart.y = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
     };
     pb.onSlideTouchMove = function (e) {
         if (!gestureImg || gestureImg.length === 0) return;
@@ -458,15 +461,17 @@ var PhotoBrowser = function (params) {
         imageMaxX = -imageMinX;
         imageMinY = Math.min((pb.swiper.height / 2 - scaledHeight / 2), 0);
         imageMaxY = -imageMinY;
-        
-        imageTouchesCurrent.x = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        imageTouchesCurrent.y = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        imageTouchesCurrent.x = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        imageTouchesCurrent.y = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
 
         if (!imageIsMoved && !isScaling) {
             if (
                 (Math.floor(imageMinX) === Math.floor(imageStartX) && imageTouchesCurrent.x < imageTouchesStart.x) ||
                 (Math.floor(imageMaxX) === Math.floor(imageStartX) && imageTouchesCurrent.x > imageTouchesStart.x)
-                ) {
+            ) {
                 imageIsTouched = false;
                 return;
             }
@@ -476,14 +481,14 @@ var PhotoBrowser = function (params) {
         imageIsMoved = true;
         imageCurrentX = imageTouchesCurrent.x - imageTouchesStart.x + imageStartX;
         imageCurrentY = imageTouchesCurrent.y - imageTouchesStart.y + imageStartY;
-        
+
         if (imageCurrentX < imageMinX) {
             imageCurrentX =  imageMinX + 1 - Math.pow((imageMinX - imageCurrentX + 1), 0.8);
         }
         if (imageCurrentX > imageMaxX) {
             imageCurrentX = imageMaxX - 1 + Math.pow((imageCurrentX - imageMaxX + 1), 0.8);
         }
-        
+
         if (imageCurrentY < imageMinY) {
             imageCurrentY =  imageMinY + 1 - Math.pow((imageMinY - imageCurrentY + 1), 0.8);
         }
@@ -554,12 +559,12 @@ var PhotoBrowser = function (params) {
         if (!swipeToCloseIsTouched) return;
         if (!swipeToCloseStarted) {
             swipeToCloseStarted = true;
-            swipeToCloseStart = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+            swipeToCloseStart = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
             swipeToCloseActiveSlide = pb.swiper.slides.eq(pb.swiper.activeIndex);
             swipeToCloseTimeStart = (new Date()).getTime();
         }
         e.preventDefault();
-        swipeToCloseCurrent = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        swipeToCloseCurrent = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         swipeToCloseDiff = swipeToCloseStart - swipeToCloseCurrent;
         var opacity = 1 - Math.abs(swipeToCloseDiff) / 300;
         swipeToCloseActiveSlide.transform('translate3d(0,' + (-swipeToCloseDiff) + 'px,0)');

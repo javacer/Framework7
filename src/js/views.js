@@ -111,7 +111,7 @@ var View = function (selector, params) {
 
     // View startup URL
     if (view.params.domCache && currentPage) {
-        view.url = container.attr('data-url') || view.params.url || '#' + currentPage.attr('data-page');   
+        view.url = container.attr('data-url') || view.params.url || '#' + currentPage.attr('data-page');
         view.pagesCache[view.url] = currentPage.attr('data-page');
     }
     else view.url = container.attr('data-url') || view.params.url || viewURL;
@@ -155,16 +155,22 @@ var View = function (selector, params) {
         isMoved = false;
         isTouched = true;
         isScrolling = undefined;
-        touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
-        touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        touchesStart.x = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        touchesStart.y = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         touchStartTime = (new Date()).getTime();
         dynamicNavbar = view.params.dynamicNavbar && container.find('.navbar-inner').length > 1;
     };
 
     view.handleTouchMove = function (e) {
         if (!isTouched) return;
-        var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        var pageX = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        var pageY = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         if (typeof isScrolling === 'undefined') {
             isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
         }
@@ -437,13 +443,13 @@ var View = function (selector, params) {
     app.views.push(view);
     if (view.main) app.mainView = view;
 
-    // Router 
+    // Router
     view.router = {
         load: function (options) {
             return app.router.load(view, options);
         },
         back: function (options) {
-            return app.router.back(view, options);  
+            return app.router.back(view, options);
         },
         // Shortcuts
         loadPage: function (options) {

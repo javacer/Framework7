@@ -37,7 +37,7 @@ var VirtualList = function (listBlock, params) {
             updatableScroll = false;
         }
     }
-        
+
     // Append <ul>
     vl.ul = vl.params.ul ? $(vl.params.ul) : vl.listBlock.children('ul');
     if (vl.ul.length === 0) {
@@ -122,19 +122,19 @@ var VirtualList = function (listBlock, params) {
             return;
         }
 
-        var items = vl.filteredItems || vl.items, 
+        var items = vl.filteredItems || vl.items,
             fromIndex, toIndex, heightBeforeFirstItem = 0, heightBeforeLastItem = 0;
         if (dynamicHeight) {
-            var itemTop = 0, j, itemHeight; 
+            var itemTop = 0, j, itemHeight;
             maxBufferHeight = pageHeight;
-            
+
             for (j = 0; j < vl.heights.length; j++) {
                 itemHeight = vl.heights[j];
                 if (typeof fromIndex === 'undefined') {
                     if (itemTop + itemHeight >= scrollTop - pageHeight * 2 * vl.params.dynamicHeightBufferSize) fromIndex = j;
                     else heightBeforeFirstItem += itemHeight;
                 }
-                
+
                 if (typeof toIndex === 'undefined') {
                     if (itemTop + itemHeight >= scrollTop + pageHeight * 2 * vl.params.dynamicHeightBufferSize || j === vl.heights.length - 1) toIndex = j + 1;
                     heightBeforeLastItem += itemHeight;
@@ -161,7 +161,7 @@ var VirtualList = function (listBlock, params) {
             if (i === fromIndex) vl.currentFromIndex = index;
             if (i === toIndex - 1) vl.currentToIndex = index;
             if (index === vl.items.length - 1) vl.reachEnd = true;
-            
+
             // Find items
             if (vl.domCache[index]) {
                 item = vl.domCache[index];
@@ -171,7 +171,7 @@ var VirtualList = function (listBlock, params) {
                     vl.tempDomElement.innerHTML = vl.template(items[i], {index: index});
                 }
                 else if (vl.params.renderItem) {
-                    vl.tempDomElement.innerHTML = vl.params.renderItem(index, items[i]);   
+                    vl.tempDomElement.innerHTML = vl.params.renderItem(index, items[i]);
                 }
                 else {
                     vl.tempDomElement.innerHTML = items[i];
@@ -191,14 +191,14 @@ var VirtualList = function (listBlock, params) {
                 }
             }
             item.style.top = topPosition + 'px';
-            
+
             // Before item insert
             if (vl.params.onItemBeforeInsert) vl.params.onItemBeforeInsert(vl, item);
 
             // Append item to fragment
             vl.fragment.appendChild(item);
 
-        
+
         }
 
         // Update list height with not updatable scroll
@@ -210,7 +210,7 @@ var VirtualList = function (listBlock, params) {
                 vl.ul[0].style.height = i * vl.params.height / vl.params.cols + 'px';
             }
         }
-            
+
 
         // Update list html
         if (vl.params.onBeforeClear) vl.params.onBeforeClear(vl, vl.fragment);
@@ -373,7 +373,7 @@ var VirtualList = function (listBlock, params) {
             prevIndex = indexes[i];
             // Delete item
             var deletedItem = vl.items.splice(index, 1)[0];
-            
+
             // Delete from filtered
             if (vl.filteredItems && vl.filteredItems.indexOf(deletedItem) >= 0) {
                 vl.filteredItems.splice(vl.filteredItems.indexOf(deletedItem), 1);
@@ -390,7 +390,7 @@ var VirtualList = function (listBlock, params) {
                         newCache[cachedIndex - 1] = vl.domCache[cached];
                     }
                     else {
-                        newCache[cachedIndex] = vl.domCache[cached];   
+                        newCache[cachedIndex] = vl.domCache[cached];
                     }
                 }
                 vl.domCache = newCache;

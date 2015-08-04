@@ -4,7 +4,7 @@
 var _tempNotificationElement;
 app.addNotification = function (params) {
     if (!params) return;
-    
+
     if (typeof params.media === 'undefined') params.media = app.params.notificationMedia;
     if (typeof params.title === 'undefined') params.title = app.params.notificationTitle;
     if (typeof params.subtitle === 'undefined') params.subtitle = app.params.notificationSubtitle;
@@ -26,8 +26,8 @@ app.addNotification = function (params) {
         container = $('.notifications');
     }
     var list = container.children('ul');
-    
-    var notificationTemplate = app.params.notificationTemplate || 
+
+    var notificationTemplate = app.params.notificationTemplate ||
         '{{#if custom}}' +
         '<li>{{custom}}</li>' +
         '{{else}}' +
@@ -104,7 +104,7 @@ app.addNotification = function (params) {
 
     list[params.material ? 'append' : 'prepend'](item[0]);
     container.show();
-    
+
     var itemHeight = item.outerHeight(), clientLeft;
     if (params.material) {
         container.transform('translate3d(0, '+itemHeight+'px, 0)');

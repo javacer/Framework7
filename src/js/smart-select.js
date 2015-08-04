@@ -40,9 +40,9 @@ app.initSmartSelects = function (pageContainer) {
                 itemAfter.text(valueText.join(', '));
             }
         }
-        
+
     });
-    
+
 };
 app.smartSelectAddOption = function (select, option, index) {
     select = $(select);
@@ -148,7 +148,7 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
 
     // Item template/HTML
     if (!app._compiledTemplates.smartSelectItem) {
-        app._compiledTemplates.smartSelectItem = t7.compile(app.params.smartSelectItemTemplate || 
+        app._compiledTemplates.smartSelectItem = t7.compile(app.params.smartSelectItemTemplate ||
             '{{#if isLabel}}' +
             '<li class="item-divider">{{groupLabel}}</li>' +
             '{{else}}' +
@@ -193,7 +193,7 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
         );
     }
     var smartSelectItemTemplate = app._compiledTemplates.smartSelectItem;
-    
+
     var inputsHTML = '';
     if (!virtualList) {
         for (var j = 0; j < values.length; j++) {
@@ -203,7 +203,7 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
 
     // Navbar HTML
     if (!app._compiledTemplates.smartSelectNavbar) {
-        app._compiledTemplates.smartSelectNavbar = t7.compile(app.params.smartSelectNavbarTemplate || 
+        app._compiledTemplates.smartSelectNavbar = t7.compile(app.params.smartSelectNavbarTemplate ||
             '<div class="navbar {{#if navbarTheme}}theme-{{navbarTheme}}{{/if}}">' +
                 '<div class="navbar-inner">' +
                     '{{leftTemplate}}' +
@@ -220,11 +220,11 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
         navbarTheme: navbarTheme,
         inPopup: openIn === 'popup',
         inPage: openIn === 'page',
-        leftTemplate: openIn === 'popup' ? 
+        leftTemplate: openIn === 'popup' ?
             (app.params.smartSelectPopupCloseTemplate || (material ? '<div class="left"><a href="#" class="link close-popup icon-only"><i class="icon icon-back"></i></a></div>' : '<div class="left"><a href="#" class="link close-popup"><i class="icon icon-back"></i><span>{{closeText}}</span></a></div>')).replace(/{{closeText}}/g, closeText) :
             (app.params.smartSelectBackTemplate || (material ? '<div class="left"><a href="#" class="back link icon-only"><i class="icon icon-back"></i></a></div>' : '<div class="left sliding"><a href="#" class="back link"><i class="icon icon-back"></i><span>{{backText}}</span></a></div>')).replace(/{{backText}}/g, backText)
     });
-    
+
     // Determine navbar layout type - static/fixed/through
     var noNavbar = '', noToolbar = '', navbarLayout;
     if (openIn === 'page') {
@@ -237,14 +237,14 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
     else {
         navbarLayout = 'fixed';
     }
-        
+
 
     // Page Layout
     var pageName = 'smart-select-' + inputName;
 
     var useSearchbar = typeof smartSelect.data('searchbar') === 'undefined' ? app.params.smartSelectSearchbar : (smartSelect.data('searchbar') === 'true' ? true : false);
     var searchbarPlaceholder, searchbarCancel;
-        
+
     if (useSearchbar) {
         searchbarPlaceholder = smartSelect.data('searchbar-placeholder') || 'Search';
         searchbarCancel = smartSelect.data('searchbar-cancel') || 'Cancel';
@@ -315,7 +315,7 @@ app.smartSelectOpen = function (smartSelect, reLayout) {
                 optionText = [smartSelect.find('option[value="' + value + '"]').text()];
                 select.value = value;
             }
-                
+
             $select.trigger('change');
             smartSelect.find('.item-after').text(optionText.join(', '));
             if (backOnSelect && inputType === 'radio') {

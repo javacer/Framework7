@@ -72,8 +72,8 @@ app.closePanel = function () {
     $('body').addClass('panel-closing').removeClass('with-panel-' + panelPosition + '-' + effect);
 };
 /*======================================================
-************   Swipe panels   ************
-======================================================*/
+ ************   Swipe panels   ************
+ ======================================================*/
 app.initSwipePanels = function () {
     var panel, side;
     if (app.params.swipePanel) {
@@ -98,8 +98,12 @@ app.initSwipePanels = function () {
         if (!(app.params.swipePanelCloseOpposite || app.params.swipePanelOnlyClose)) {
             if ($('.panel.active').length > 0 && !panel.hasClass('active')) return;
         }
-        touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
-        touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        touchesStart.x = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        touchesStart.y = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         if (app.params.swipePanelCloseOpposite || app.params.swipePanelOnlyClose) {
             if ($('.panel.active').length > 0) {
                 side = $('.panel.active').hasClass('panel-left') ? 'left' : 'right';
@@ -130,8 +134,11 @@ app.initSwipePanels = function () {
     function handleTouchMove(e) {
         if (!isTouched) return;
         if (e.f7PreventPanelSwipe) return;
-        var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        var pageX = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        var pageY = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         if (typeof isScrolling === 'undefined') {
             isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
         }
@@ -218,7 +225,6 @@ app.initSwipePanels = function () {
         if (effect === 'reveal') {
             views.transform('translate3d(' + translate + 'px,0,0)').transition(0);
             panelOverlay.transform('translate3d(' + translate + 'px,0,0)').transition(0);
-            
             app.pluginHook('swipePanelSetTransform', views[0], panel[0], Math.abs(translate / panelWidth));
         }
         else {

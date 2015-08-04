@@ -1,4 +1,28 @@
 'use strict';
+
+/**
+ Polyfill for creating CustomEvents on IE9/10/11
+ **/
+try {
+    new CustomEvent("test");
+} catch (e) {
+    var CustomEvent = function (event, params) {
+        var evt;
+        params = params || {
+            bubbles: false,
+            cancelable: false,
+            detail: undefined
+        };
+
+        evt = document.createEvent("CustomEvent");
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    };
+
+    CustomEvent.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent; // expose definition to window
+}
+
 /*===========================
 Framework 7
 ===========================*/
@@ -115,7 +139,7 @@ window.Framework7 = function (params) {
         materialRipple: true,
         materialRippleElements: '.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button',
         // Auto init
-        init: true,
+        init: true
     };
 
     // Extend defaults with parameters
@@ -132,9 +156,10 @@ window.Framework7 = function (params) {
 
     // Touch events
     app.touchEvents = {
-        start: app.support.touch ? 'touchstart' : 'mousedown',
-        move: app.support.touch ? 'touchmove' : 'mousemove',
-        end: app.support.touch ? 'touchend' : 'mouseup'
+        start: app.support.touch ? app.support.isMS ?  'pointerdown' : 'touchstart' : 'mousedown',
+        move: app.support.touch ? app.support.isMS ? 'pointermove' : 'touchmove' : 'mousemove',
+        end: app.support.touch ? app.support.isMS ? 'pointerup' : 'touchend' : 'mouseup',
+        cancel: app.support.touch ? app.support.isMS ? 'pointercancel' : 'touchcancel' : null
     };
 
     // Link to local storage

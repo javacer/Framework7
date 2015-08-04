@@ -22,9 +22,9 @@ app.initPullToRefresh = function (pageContainer) {
         dynamicTriggerDistance = true;
     }
     else {
-        triggerDistance = 44;   
+        triggerDistance = 44;
     }
-    
+
     function handleTouchStart(e) {
         if (isTouched) {
             if (app.device.os === 'android') {
@@ -32,29 +32,35 @@ app.initPullToRefresh = function (pageContainer) {
             }
             else return;
         }
-        
+
         isMoved = false;
         isTouched = true;
         isScrolling = undefined;
         wasScrolled = undefined;
-        if (e.type === 'touchstart') touchId = e.targetTouches[0].identifier;
-        touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
-        touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (app.support.isMS) {
+            e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+        }
+        if (e.type === app.touchEvents.start && app.support.touch) touchId = e.targetTouches[0].identifier;
+        touchesStart.x = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+        touchesStart.y = e.type === app.touchEvents.start && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
         touchStartTime = (new Date()).getTime();
         /*jshint validthis:true */
         container = $(this);
     }
-    
+
     function handleTouchMove(e) {
         if (!isTouched) return;
         var pageX, pageY, touch;
-        if (e.type === 'touchmove') {
+        if (e.type === app.touchEvents.move && app.support.touch) {
             if (touchId && e.touches) {
                 for (var i = 0; i < e.touches.length; i++) {
                     if (e.touches[i].identifier === touchId) {
                         touch = e.touches[i];
                     }
                 }
+            }
+            if (app.support.isMS) {
+                e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
             }
             if (!touch) touch = e.targetTouches[0];
             pageX = touch.pageX;
@@ -65,7 +71,7 @@ app.initPullToRefresh = function (pageContainer) {
             pageY = e.pageY;
         }
         if (!pageX || !pageY) return;
-            
+
 
         if (typeof isScrolling === 'undefined') {
             isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
@@ -76,7 +82,7 @@ app.initPullToRefresh = function (pageContainer) {
         }
 
         scrollTop = container[0].scrollTop;
-        if (typeof wasScrolled === 'undefined' && scrollTop !== 0) wasScrolled = true; 
+        if (typeof wasScrolled === 'undefined' && scrollTop !== 0) wasScrolled = true;
 
         if (!isMoved) {
             /*jshint validthis:true */
@@ -99,7 +105,7 @@ app.initPullToRefresh = function (pageContainer) {
         }
         isMoved = true;
         touchesDiff = pageY - touchesStart.y;
-        
+
         if (touchesDiff > 0 && scrollTop <= 0 || scrollTop < 0) {
             // iOS 8 fix
             if (app.device.os === 'ios' && parseInt(app.device.osVersion.split('.')[0], 10) > 7 && scrollTop === 0 && !wasScrolled) useTranslate = true;
@@ -121,14 +127,18 @@ app.initPullToRefresh = function (pageContainer) {
             }
         }
         else {
-            
+
             container.removeClass('pull-up pull-down');
             refresh = false;
             return;
         }
     }
     function handleTouchEnd(e) {
-        if (e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0 && touchId) {
+        if (app.support.isMS) {
+            e.changedTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
+            e.changedTouches[0].identifier = e.changedTouches[0].pointerId
+        }
+        if (e.type === app.touchEvents.end && app.support.touch && e.changedTouches && e.changedTouches.length > 0 && touchId) {
             if (e.changedTouches[0].identifier !== touchId) return;
         }
         if (!isTouched || !isMoved) {
