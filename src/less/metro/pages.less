@@ -1,7 +1,7 @@
 /* === Pages === */
 
 // Pages animations
-@pageDuration: 165ms;
+@pageDuration: 300ms;
 
 .pages {
     position: relative;
@@ -51,27 +51,29 @@
 }
 // From/to Right To/from Center animations
 .page-from-right-to-center {
-    display: none;
+    opacity: 0;
+    left: 100%;
 }
 .page-from-center-to-right {
-    display: none;
+    animation: pageFromLeftToCenter @pageDuration forwards @pageDuration;
 }
 // From/to Center To/from Left animations
 .page-from-center-to-left {
     animation: pageFromCenterToLeft @pageDuration forwards @pageDuration;
 }
 .page-from-left-to-center {
-    animation: pageFromLeftToCenter @pageDuration forwards @pageDuration;
+    opacity: 0;
+    left: -100%;
 }
 
 .page-enter-animation {
     animation: pageEnterAnimation @pageDuration forwards, pageHideAnimation 20ms forwards @pageDuration;
-    transform-origin: center left 0px;
+    transform-origin: left;
     transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 .page-outer-animation {
     animation: pageOuterAnimation @pageDuration forwards, pageHideAnimation 20ms forwards @pageDuration;
-    transform-origin: center left 0px;
+    transform-origin: left;
     transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
@@ -80,10 +82,10 @@
 
 @keyframes pageOuterAnimation {
     from {
-        transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+        transform: rotateY(0deg);
     }
     to {
-        transform: matrix3d(1,0,0,0.001,0,1,0,0,0,0,1,0,0,0,0,1);
+        transform: rotateY(45deg);
     }
 }
 @keyframes pageHideAnimation {
@@ -96,9 +98,9 @@
 }
 @keyframes pageEnterAnimation {
     from {
-        transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+        transform: rotateY(0deg);
     }
     to {
-        transform: matrix3d(1,0,0,-0.001,0,1,0,0,0,0,1,0,0,0,0,1);
+        transform: rotateY(-30deg);
     }
 }
