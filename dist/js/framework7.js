@@ -10,7 +10,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 4, 2015
+ * Released on: August 5, 2015
  */
         (function () {
         
@@ -223,6 +223,10 @@
                 if (typeof params[def] === 'undefined') {
                     params[def] = defaults[def];
                 }
+            }
+        
+            if (app.device.winPhone){
+                params.swipeBackPage = false
             }
             // View
             var view = this;
@@ -2022,19 +2026,19 @@
                 // Loading new page
                 var removeClasses = 'page-on-center page-on-right page-on-left';
                 if (direction === 'to-left') {
+                    leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
+                    rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
                     if (app.device.winPhone) {
                         $(view.container).addClass('page-enter-animation');
                     }
-                    leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
-                    rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
                 }
                 // Go back
                 if (direction === 'to-right') {
+                    leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
+                    rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
                     if (app.device.winPhone) {
                         $(view.container).addClass('page-outer-animation');
                     }
-                    leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
-                    rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
                 }
             },
         
@@ -3061,6 +3065,10 @@
             // Remove old page and set classes on new one
             oldPage = $(oldPage);
             newPage = $(newPage);
+        
+            if (app.device.winPhone) {
+                $(view.container).removeClass('page-enter-animation page-outer-animation');
+            }
         
             if (view.params.domCache && view.initialPages.indexOf(oldPage[0]) >= 0) {
                 oldPage.removeClass('page-from-center-to-right').addClass('cached');
