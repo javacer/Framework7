@@ -34,19 +34,19 @@ app.router = {
         // Loading new page
         var removeClasses = 'page-on-center page-on-right page-on-left';
         if (direction === 'to-left') {
+            leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
+            rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
             if (app.device.winPhone) {
                 $(view.container).addClass('page-enter-animation');
             }
-            leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
-            rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
         }
         // Go back
         if (direction === 'to-right') {
+            leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
+            rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
             if (app.device.winPhone) {
                 $(view.container).addClass('page-outer-animation');
             }
-            leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
-            rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
         }
     },
 

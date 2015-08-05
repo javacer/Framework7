@@ -27,6 +27,10 @@ var View = function (selector, params) {
             params[def] = defaults[def];
         }
     }
+
+    if (app.device.winPhone){
+        params.swipeBackPage = false
+    }
     // View
     var view = this;
     view.params = params;
