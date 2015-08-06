@@ -139,7 +139,8 @@ window.Framework7 = function (params) {
         materialRipple: true,
         materialRippleElements: '.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button',
         // Auto init
-        init: true
+        init: true,
+        metro: false
     };
 
     // Extend defaults with parameters

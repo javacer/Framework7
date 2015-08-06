@@ -36,7 +36,7 @@ app.router = {
         if (direction === 'to-left') {
             leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
             rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
-            if (app.device.winPhone) {
+            if (app.params.metro) {
                 $(view.container).addClass('page-enter-animation');
             }
         }
@@ -44,7 +44,7 @@ app.router = {
         if (direction === 'to-right') {
             leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
             rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
-            if (app.device.winPhone) {
+            if (app.params.metro) {
                 $(view.container).addClass('page-outer-animation');
             }
         }
@@ -514,7 +514,7 @@ app.router._load = function (view, options) {
 
     function afterAnimation() {
         view.allowPageChange = true;
-        if (app.device.winPhone) {
+        if (app.params.metro) {
             $(view.container).removeClass('page-enter-animation page-outer-animation');
         }
         newPage.removeClass('page-from-right-to-center page-on-right page-on-left').addClass('page-on-center');
@@ -553,7 +553,7 @@ app.router._load = function (view, options) {
     }
     if (animatePages) {
         // Set pages before animation
-        if (app.device.winPhone) {
+        if (app.params.metro) {
             $(view.container).animationEnd( function (e) {
                 afterAnimation();
             });
@@ -708,7 +708,7 @@ app.router._back = function (view, options) {
 
         if (animatePages) {
             // Set pages before animation
-            if (app.device.winPhone) {
+            if (app.params.metro) {
                 $(view.container).animationEnd(function (e) {
                     afterAnimation();
                 });
@@ -1074,7 +1074,7 @@ app.router.afterBack = function (view, oldPage, newPage) {
     oldPage = $(oldPage);
     newPage = $(newPage);
 
-    if (app.device.winPhone) {
+    if (app.params.metro) {
         $(view.container).removeClass('page-enter-animation page-outer-animation');
     }
 
