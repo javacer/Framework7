@@ -27,10 +27,6 @@ var View = function (selector, params) {
             params[def] = defaults[def];
         }
     }
-
-    if (app.device.winPhone){
-        params.swipeBackPage = false
-    }
     // View
     var view = this;
     view.params = params;
@@ -439,7 +435,7 @@ var View = function (selector, params) {
     };
 
     // Init
-    if (view.params.swipeBackPage && !app.params.material) {
+    if (view.params.swipeBackPage && !app.params.material && !app.params.metro) {
         view.attachEvents();
     }
 

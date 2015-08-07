@@ -10,7 +10,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 6, 2015
+ * Released on: August 7, 2015
  */
         (function () {
         
@@ -156,7 +156,8 @@
                 materialRipple: true,
                 materialRippleElements: '.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button',
                 // Auto init
-                init: true
+                init: true,
+                metro: false
             };
         
             // Extend defaults with parameters
@@ -223,10 +224,6 @@
                 if (typeof params[def] === 'undefined') {
                     params[def] = defaults[def];
                 }
-            }
-        
-            if (app.device.winPhone){
-                params.swipeBackPage = false
             }
             // View
             var view = this;
@@ -636,7 +633,7 @@
             };
         
             // Init
-            if (view.params.swipeBackPage && !app.params.material) {
+            if (view.params.swipeBackPage && !app.params.material && !app.params.metro) {
                 view.attachEvents();
             }
         
@@ -2028,7 +2025,7 @@
                 if (direction === 'to-left') {
                     leftPage.removeClass(removeClasses).addClass('page-from-center-to-left');
                     rightPage.removeClass(removeClasses).addClass('page-from-right-to-center');
-                    if (app.device.winPhone) {
+                    if (app.params.metro) {
                         $(view.container).addClass('page-enter-animation');
                     }
                 }
@@ -2036,7 +2033,7 @@
                 if (direction === 'to-right') {
                     leftPage.removeClass(removeClasses).addClass('page-from-left-to-center');
                     rightPage.removeClass(removeClasses).addClass('page-from-center-to-right');
-                    if (app.device.winPhone) {
+                    if (app.params.metro) {
                         $(view.container).addClass('page-outer-animation');
                     }
                 }
@@ -2506,7 +2503,7 @@
         
             function afterAnimation() {
                 view.allowPageChange = true;
-                if (app.device.winPhone) {
+                if (app.params.metro) {
                     $(view.container).removeClass('page-enter-animation page-outer-animation');
                 }
                 newPage.removeClass('page-from-right-to-center page-on-right page-on-left').addClass('page-on-center');
@@ -2545,7 +2542,7 @@
             }
             if (animatePages) {
                 // Set pages before animation
-                if (app.device.winPhone) {
+                if (app.params.metro) {
                     $(view.container).animationEnd( function (e) {
                         afterAnimation();
                     });
@@ -2700,7 +2697,7 @@
         
                 if (animatePages) {
                     // Set pages before animation
-                    if (app.device.winPhone) {
+                    if (app.params.metro) {
                         $(view.container).animationEnd(function (e) {
                             afterAnimation();
                         });
@@ -3066,7 +3063,7 @@
             oldPage = $(oldPage);
             newPage = $(newPage);
         
-            if (app.device.winPhone) {
+            if (app.params.metro) {
                 $(view.container).removeClass('page-enter-animation page-outer-animation');
             }
         
