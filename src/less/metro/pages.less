@@ -1,7 +1,7 @@
 /* === Pages === */
 
 // Pages animations
-@pageDuration: 300ms;
+@pageDuration: 250ms;
 
 .pages {
     position: relative;
@@ -67,14 +67,12 @@
 }
 
 .page-enter-animation {
-    animation: pageEnterAnimation @pageDuration forwards, pageHideAnimation 20ms forwards @pageDuration;
+    animation: pageEnterAnimation @pageDuration forwards cubic-bezier(0.33, 0.18, 0.11, 1), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) @pageDuration;
     transform-origin: left;
-    transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 .page-outer-animation {
-    animation: pageOuterAnimation @pageDuration forwards, pageHideAnimation 20ms forwards @pageDuration;
+    animation: pageOuterAnimation @pageDuration forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20 forwards cubic-bezier(0, 2, 0, 2) @pageDuration;
     transform-origin: left;
-    transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
 @keyframes pageFromCenterToLeft { from { opacity: 1; } to { opacity: 1; } }
@@ -82,10 +80,10 @@
 
 @keyframes pageOuterAnimation {
     from {
-        transform: rotateY(0deg);
+        transform: rotateY(0deg) scale(1.0, 1.0) translate(0px, 0px);
     }
     to {
-        transform: rotateY(45deg);
+        transform: rotateY(80deg) scale(1.5, 1.5) translate(0px, 150px);
     }
 }
 @keyframes pageHideAnimation {
@@ -98,9 +96,9 @@
 }
 @keyframes pageEnterAnimation {
     from {
-        transform: rotateY(0deg);
+        transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, 0px);
     }
     to {
-        transform: rotateY(-30deg);
+        transform: rotateY(-80deg) scale(1.0, 1.0) translate(0px, -100px);
     }
 }

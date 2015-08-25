@@ -12,7 +12,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 7, 2015
+ * Released on: August 25, 2015
  */
 html,
 body {
@@ -707,32 +707,30 @@ p {
   touch-action: pan-y;
 }
 .page-transitioning {
-  -webkit-transition-duration: 300ms;
-  transition-duration: 300ms;
+  -webkit-transition-duration: 250ms;
+  transition-duration: 250ms;
 }
 .page-from-right-to-center {
   opacity: 0;
   left: 100%;
 }
 .page-from-center-to-right {
-  animation: pageFromLeftToCenter 300ms forwards 300ms;
+  animation: pageFromLeftToCenter 250ms forwards 250ms;
 }
 .page-from-center-to-left {
-  animation: pageFromCenterToLeft 300ms forwards 300ms;
+  animation: pageFromCenterToLeft 250ms forwards 250ms;
 }
 .page-from-left-to-center {
   opacity: 0;
   left: -100%;
 }
 .page-enter-animation {
-  animation: pageEnterAnimation 300ms forwards, pageHideAnimation 20ms forwards 300ms;
+  animation: pageEnterAnimation 250ms forwards cubic-bezier(0.33, 0.18, 0.11, 1), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) 250ms;
   transform-origin: left;
-  transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 .page-outer-animation {
-  animation: pageOuterAnimation 300ms forwards, pageHideAnimation 20ms forwards 300ms;
+  animation: pageOuterAnimation 250ms forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20 forwards cubic-bezier(0, 2, 0, 2) 250ms;
   transform-origin: left;
-  transition-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 @keyframes pageFromCenterToLeft {
   from {
@@ -752,10 +750,10 @@ p {
 }
 @keyframes pageOuterAnimation {
   from {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) scale(1, 1) translate(0px, 0px);
   }
   to {
-    transform: rotateY(45deg);
+    transform: rotateY(80deg) scale(1.5, 1.5) translate(0px, 150px);
   }
 }
 @keyframes pageHideAnimation {
@@ -768,10 +766,10 @@ p {
 }
 @keyframes pageEnterAnimation {
   from {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, 0px);
   }
   to {
-    transform: rotateY(-30deg);
+    transform: rotateY(-80deg) scale(1, 1) translate(0px, -100px);
   }
 }
 /* === Toolbars === */

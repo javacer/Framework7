@@ -10,7 +10,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 7, 2015
+ * Released on: August 25, 2015
  */
         (function () {
         
@@ -11399,7 +11399,8 @@
         ===========================*/
         Framework7.prototype.support = (function () {
             var support = {
-                touch: !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch)
+                touch: !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch),
+                isMS: !!(window.MSPointerEvent || window.PointerEvent)
             };
         
             // Export object
