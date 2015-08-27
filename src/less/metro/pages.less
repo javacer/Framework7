@@ -69,10 +69,12 @@
 .page-enter-animation {
     animation: pageEnterAnimation @pageDuration forwards cubic-bezier(0.33, 0.18, 0.11, 1), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) @pageDuration;
     transform-origin: left;
+    z-index: 1000;
 }
 .page-outer-animation {
-    animation: pageOuterAnimation @pageDuration forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20 forwards cubic-bezier(0, 2, 0, 2) @pageDuration;
+    animation: pageOuterAnimation @pageDuration forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) @pageDuration;
     transform-origin: left;
+    z-index: 1000;
 }
 
 @keyframes pageFromCenterToLeft { from { opacity: 1; } to { opacity: 1; } }
@@ -80,10 +82,10 @@
 
 @keyframes pageOuterAnimation {
     from {
-        transform: rotateY(0deg) scale(1.0, 1.0) translate(0px, 0px);
+        transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, -100px);
     }
     to {
-        transform: rotateY(80deg) scale(1.5, 1.5) translate(0px, 150px);
+        transform: rotateY(80deg) scale(1.0, 1.0) translate(0px, 0px);
     }
 }
 @keyframes pageHideAnimation {
@@ -96,9 +98,9 @@
 }
 @keyframes pageEnterAnimation {
     from {
-        transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, 0px);
+        transform: rotateY(0deg) scale(1.0, 1.0) translate(0px, 0px);
     }
     to {
-        transform: rotateY(-80deg) scale(1.0, 1.0) translate(0px, -100px);
+        transform: rotateY(-80deg) scale(1.25, 1.25) translate(0px, -100px);
     }
 }

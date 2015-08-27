@@ -12,7 +12,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 25, 2015
+ * Released on: August 27, 2015
  */
 html,
 body {
@@ -727,10 +727,12 @@ p {
 .page-enter-animation {
   animation: pageEnterAnimation 250ms forwards cubic-bezier(0.33, 0.18, 0.11, 1), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) 250ms;
   transform-origin: left;
+  z-index: 1000;
 }
 .page-outer-animation {
-  animation: pageOuterAnimation 250ms forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20 forwards cubic-bezier(0, 2, 0, 2) 250ms;
+  animation: pageOuterAnimation 250ms forwards cubic-bezier(0.2975, 0.7325, 0.4725, 0.99), pageHideAnimation 20ms forwards cubic-bezier(0, 2, 0, 2) 250ms;
   transform-origin: left;
+  z-index: 1000;
 }
 @keyframes pageFromCenterToLeft {
   from {
@@ -750,10 +752,10 @@ p {
 }
 @keyframes pageOuterAnimation {
   from {
-    transform: rotateY(0deg) scale(1, 1) translate(0px, 0px);
+    transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, -100px);
   }
   to {
-    transform: rotateY(80deg) scale(1.5, 1.5) translate(0px, 150px);
+    transform: rotateY(80deg) scale(1, 1) translate(0px, 0px);
   }
 }
 @keyframes pageHideAnimation {
@@ -766,10 +768,10 @@ p {
 }
 @keyframes pageEnterAnimation {
   from {
-    transform: rotateY(0deg) scale(1.25, 1.25) translate(0px, 0px);
+    transform: rotateY(0deg) scale(1, 1) translate(0px, 0px);
   }
   to {
-    transform: rotateY(-80deg) scale(1, 1) translate(0px, -100px);
+    transform: rotateY(-80deg) scale(1.25, 1.25) translate(0px, -100px);
   }
 }
 /* === Toolbars === */
