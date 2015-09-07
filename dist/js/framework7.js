@@ -10,7 +10,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: August 31, 2015
+ * Released on: September 7, 2015
  */
         (function () {
         
@@ -4511,8 +4511,8 @@
                 if (app.support.isMS) {
                     e.targetTouches = [e]; // Fix touches for MS, https://msdn.microsoft.com/ru-ru/library/windows/apps/hh441233.aspx
                 }
-                var pageX = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX : e.pageY;
-                var pageY = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageX;
+                var pageX = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageX : e.pageX;
+                var pageY = e.type === app.touchEvents.move && app.support.touch ? e.targetTouches[0].pageY : e.pageY;
                 if (typeof isScrolling === 'undefined') {
                     isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
                 }
